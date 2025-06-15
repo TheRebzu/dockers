@@ -357,16 +357,6 @@ docker network inspect dockers_fullstack_network
 - ✅ **Images** : Publiées sur Docker Hub
 - ✅ **Documentation** : Guide complet
 
-### Auteur
-**Projet Conteneurisation** - Année 2024-2025  
-LENOIR Romain - romain.lenoir@outlook.com
-
----
-
-## 📄 Licence
-
-Ce projet est développé dans le cadre académique.
-
 ---
 
 **🚀 L'application EcoDeli démontre une maîtrise complète de la conteneurisation Docker pour une architecture fullstack moderne !**
