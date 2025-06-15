@@ -1,0 +1,270 @@
+# ==============================================
+# PROJET DOCKER FULLSTACK - GITIGNORE
+# ==============================================
+
+# ==========================================
+# FICHIERS DE CONFIGURATION SENSIBLES
+# ==========================================
+# Variables d'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+
+# Fichiers de secrets
+secrets/
+*.key
+*.pem
+*.crt
+*.cert
+
+# ==========================================
+# DOCKER
+# ==========================================
+# Volumes Docker
+postgres_data/
+mongodb_data/
+redis_data/
+
+# Logs Docker
+docker-compose.override.yml
+.docker/
+
+# ==========================================
+# NODE.JS / NPM
+# ==========================================
+# Dépendances
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Cache npm
+.npm
+.yarn-integrity
+
+# Fichiers de logs
+logs/
+*.log
+
+# ==========================================
+# REACT / FRONTEND
+# ==========================================
+# Build du frontend
+/frontend/build/
+/frontend/dist/
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Cache et fichiers temporaires React
+/frontend/.cache/
+/frontend/public/hot/
+/frontend/public/storage/
+
+# Coverage tests
+/frontend/coverage/
+
+# ==========================================
+# BACKEND / API
+# ==========================================
+# Build du backend
+/backend/build/
+/backend/dist/
+/backend/.env
+/backend/.env.local
+/backend/.env.development.local
+/backend/.env.test.local
+/backend/.env.production.local
+
+# Uploads et fichiers temporaires
+/backend/uploads/
+/backend/temp/
+/backend/storage/
+
+# ==========================================
+# BASE DE DONNÉES
+# ==========================================
+# Dumps de base de données
+*.sql
+*.dump
+*.sqlite
+*.db
+
+# Fichiers de migration temporaires
+/database/migrations/temp/
+/database/backups/
+
+# ==========================================
+# TESTS
+# ==========================================
+# Coverage de tests
+coverage/
+.nyc_output/
+.coverage/
+
+# Fichiers de test temporaires
+test-results/
+screenshots/
+
+# ==========================================
+# EDITEURS ET IDE
+# ==========================================
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# WebStorm / IntelliJ
+.idea/
+*.swp
+*.swo
+*~
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ==========================================
+# SYSTÈME D'EXPLOITATION
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==========================================
+# LOGS ET MONITORING
+# ==========================================
+# Logs applicatifs
+*.log
+logs/
+log/
+
+# Monitoring
+.pm2/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ==========================================
+# CACHE ET FICHIERS TEMPORAIRES
+# ==========================================
+# Cache général
+.cache/
+tmp/
+temp/
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# ==========================================
+# DÉPLOIEMENT ET CI/CD
+# ==========================================
+# Déploiement
+deploy/
+deployment/
+
+# Build artifacts
+build/
+dist/
+out/
+
+# CI/CD
+.github/workflows/secrets/
+
+# ==========================================
+# UTILITAIRES DE DÉVELOPPEMENT
+# ==========================================
+# Profiling
+.prof
+
+# Debugging
+.debug/
+
+# Storybook
+storybook-static/
+
+# ESLint cache
+.eslintcache
+
+# Parcel cache
+.parcel-cache/
+
+# ==========================================
+# DOCUMENTATION GÉNÉRÉE
+# ==========================================
+docs/generated/
+api-docs/
+
+# ==========================================
+# SCRIPTS ET OUTILS
+# ==========================================
+# Scripts de développement temporaires
+dev-scripts/temp/
+tools/temp/
+
+# ==========================================
+# COMMENTAIRES UTILES
+# ==========================================
+# Pour inclure un fichier normalement ignoré, utilisez :
+# !fichier-important.env.example
+
+# Pour ignorer un dossier spécifique dans tous les sous-dossiers :
+# **/nom-du-dossier/
+
+# Pour ignorer tous les fichiers avec une extension spécifique :
+# *.extension

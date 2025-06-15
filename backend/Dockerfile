@@ -1,13 +1,20 @@
+# Utiliser une image Node.js officielle comme base
 FROM node:18-alpine
 
+# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
+# Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
+# Installer les dépendances
 RUN npm install
 
+# Copier le reste du code source
 COPY . .
 
-EXPOSE 5000
+# Exposer le port sur lequel l'API s'exécute
+EXPOSE 3001
 
+# Définir la commande par défaut pour démarrer le serveur
 CMD ["npm", "start"]
