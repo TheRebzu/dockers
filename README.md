@@ -1,249 +1,372 @@
-# Application Full Stack Conteneurisée avec Docker
+# 🐳 EcoDeli - Application Fullstack Conteneurisée avec Docker
 
-## Description du Projet
+## 📋 Table des matières
+1. [Vue d'ensemble](#vue-densemble)
+2. [Architecture Docker](#architecture-docker)
+3. [Prérequis](#prérequis)
+4. [Installation et Démarrage](#installation-et-démarrage)
+5. [Services et Configuration](#services-et-configuration)
+6. [Persistance des Données](#persistance-des-données)
+7. [Réseaux Docker](#réseaux-docker)
+8. [Tests et Validation](#tests-et-validation)
+9. [Images Docker Hub](#images-docker-hub)
+10. [Troubleshooting](#troubleshooting)
 
-Cette application démontre la conteneurisation d'une application full stack complète utilisant Docker et Docker Compose. L'application comprend :
+---
 
-- **Frontend** : Application React (port 3000)
-- **Backend** : API REST Node.js/Express (port 3001)  
-- **Base de données** : PostgreSQL (port 5432)
+## 🎯 Vue d'ensemble
 
-## Architecture Docker
+**EcoDeli** est une application fullstack de gestion d'utilisateurs conteneurisée avec Docker, développée dans le cadre du projet de conteneurisation. L'application démontre une architecture microservices avec :
 
-### Services Configurés
+- **Frontend** : React.js avec interface moderne
+- **Backend** : Node.js + Express.js avec API REST
+- **Base de données** : PostgreSQL avec persistance des données
+- **Orchestration** : Docker Compose pour la gestion des services
 
-1. **database** : Conteneur PostgreSQL avec persistance des données
-2. **backend** : API Node.js/Express connectée à la base de données
-3. **frontend** : Application React communicant avec l'API
+### Fonctionnalités
+- ✅ Gestion CRUD des utilisateurs
+- ✅ Interface utilisateur responsive
+- ✅ API REST documentée
+- ✅ Persistance des données
+- ✅ Communication sécurisée entre services
 
-### Volumes Configurés
+---
 
-- `postgres_data` : Volume persistant pour les données PostgreSQL
-- `./database/init.sql` : Script d'initialisation de la base de données
+## 🏗️ Architecture Docker
 
-### Réseau Personnalisé
+### Diagramme de l'architecture
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend       │    │   Database      │
+│   (React)       │    │   (Node.js)     │    │   (PostgreSQL)  │
+│   Port: 3000    │◄──►│   Port: 3001    │◄──►│   Port: 5432    │
+│                 │    │                 │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                        │                        │
+         └────────────────────────┼────────────────────────┘
+                                  │
+                    ┌─────────────────────────┐
+                    │  Réseau Docker         │
+                    │  fullstack_network     │
+                    │  (Bridge Network)      │
+                    └─────────────────────────┘
+```
 
-- `fullstack_network` : Réseau bridge personnalisé (172.20.0.0/16)
-- Communication sécurisée entre les conteneurs
-- Isolation du trafic réseau
+### Conteneurs
+| Service | Image | Port | Volumes |
+|---------|-------|------|---------|
+| **frontend** | `ecodeli-frontend:latest` | 3000 | - |
+| **backend** | `ecodeli-backend:latest` | 3001 | - |
+| **database** | `postgres:15-alpine` | 5432 | `postgres_data` |
 
-## Prérequis
+---
 
-- Docker (version 20.10 ou supérieure)
-- Docker Compose (version 2.0 ou supérieure)
-- Au moins 2 GB de RAM libre
-- Ports 3000, 3001, et 5432 disponibles
+## 🔧 Prérequis
 
-## Installation et Démarrage
+### Logiciels requis
+- **Docker** : Version 20.10.0 ou supérieure
+- **Docker Compose** : Version 2.0.0 ou supérieure
+- **Git** : Pour cloner le repository
 
-### 1. Cloner le Repository
-
+### Vérification des installations
 ```bash
-git clone <votre-repository-url>
+# Vérifier Docker
+docker --version
+docker-compose --version
+
+# Vérifier que Docker est en cours d'exécution
+docker ps
+```
+
+---
+
+## 🚀 Installation et Démarrage
+
+### 1. Cloner le repository
+```bash
+git clone https://github.com/therebzu/dockers
 cd dockers
 ```
 
-### 2. Construire et Démarrer l'Application
-
+### 2. Configuration des variables d'environnement
 ```bash
-# Construire et démarrer tous les services
-docker-compose up --build
+# Copier le fichier d'exemple
+cp .env.example .env
 
-# Ou en arrière-plan
-docker-compose up --build -d
+# Modifier si nécessaire (optionnel pour développement)
+nano .env
 ```
 
-### 3. Vérifier le Démarrage
-
+### 3. Construire et démarrer l'application
 ```bash
+# Construction et démarrage en mode détaché
+docker-compose up --build -d
+
 # Vérifier l'état des conteneurs
 docker-compose ps
-
-# Consulter les logs
-docker-compose logs -f
 ```
 
-## Accès à l'Application
-
+### 4. Accéder à l'application
 - **Frontend** : http://localhost:3000
 - **Backend API** : http://localhost:3001
-- **Base de données** : localhost:5432 (postgres/password)
+- **Health Check** : http://localhost:3001/health
 
-### Endpoints API Disponibles
-
-- `GET /health` : Status de l'API
-- `GET /api/users` : Liste des utilisateurs
-- `POST /api/users` : Créer un utilisateur
-- `DELETE /api/users/:id` : Supprimer un utilisateur
-
-## Tests de Communication et Persistance
-
-### 1. Test de Communication Frontend-Backend
-
-1. Ouvrir http://localhost:3000
-2. Ajouter un nouvel utilisateur via le formulaire
-3. Vérifier que l'utilisateur apparaît dans la liste
-
-### 2. Test de Persistance des Données
-
+### 5. Arrêter l'application
 ```bash
-# Arrêter les conteneurs
-docker-compose down
-
-# Redémarrer (sans --build pour tester la persistance)
-docker-compose up
-
-# Vérifier que les données sont toujours présentes
-```
-
-### 3. Test de Communication Backend-Database
-
-```bash
-# Se connecter au conteneur backend
-docker-compose exec backend sh
-
-# Tester la connexion à la base de données (depuis le conteneur)
-curl http://localhost:3001/api/users
-```
-
-### 4. Test de Réseau Sécurisé
-
-```bash
-# Inspecter le réseau
-docker network inspect dockers_fullstack_network
-
-# Vérifier les connexions entre conteneurs
-docker-compose exec backend ping database
-docker-compose exec frontend ping backend
-```
-
-## Commandes Utiles
-
-### Gestion des Conteneurs
-
-```bash
-# Démarrer les services
-docker-compose up
-
 # Arrêter les services
 docker-compose down
 
-# Redémarrer un service spécifique
-docker-compose restart backend
+# Arrêter et supprimer les volumes (⚠️ supprime les données)
+docker-compose down --volumes
+```
 
-# Voir les logs d'un service
+---
+
+## ⚙️ Services et Configuration
+
+### 🌐 Frontend (React)
+- **Image** : Node.js 18 Alpine
+- **Port** : 3000
+- **Build** : Production optimisé
+- **Fonctionnalités** :
+  - Interface utilisateur moderne
+  - Formulaire d'ajout d'utilisateurs
+  - Liste des utilisateurs avec suppression
+  - Design responsive
+
+### 🔧 Backend (Node.js)
+- **Image** : Node.js 18 Alpine
+- **Port** : 3001
+- **Endpoints** :
+  - `GET /health` - Status de l'API
+  - `GET /api/users` - Liste des utilisateurs
+  - `POST /api/users` - Créer un utilisateur
+  - `DELETE /api/users/:id` - Supprimer un utilisateur
+
+### 🗄️ Database (PostgreSQL)
+- **Image** : PostgreSQL 15 Alpine
+- **Port** : 5432
+- **Schéma** :
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## 💾 Persistance des Données
+
+### Configuration des volumes
+```yaml
+volumes:
+  postgres_data:
+    driver: local
+```
+
+### Localisation des données
+- **Volume Docker** : `postgres_data`
+- **Montage** : `/var/lib/postgresql/data` dans le conteneur
+- **Persistance** : Les données survivent aux redémarrages
+
+### Sauvegarde et restauration
+```bash
+# Sauvegarde
+docker exec fullstack_database pg_dump -U postgres fullstack_app > backup.sql
+
+# Restauration
+docker exec -i fullstack_database psql -U postgres fullstack_app < backup.sql
+```
+
+---
+
+## 🔐 Réseaux Docker
+
+### Configuration réseau
+```yaml
+networks:
+  fullstack_network:
+    driver: bridge
+```
+
+### Communication entre services
+- **Frontend ↔ Backend** : HTTP via nom de service
+- **Backend ↔ Database** : PostgreSQL via nom de service
+- **Isolation** : Les services ne sont accessibles qu'entre eux
+- **Sécurité** : Communication interne sécurisée
+
+### Test de connectivité
+```bash
+# Tester la connectivité backend → database
+docker exec fullstack_backend ping database
+
+# Tester la connectivité frontend → backend
+docker exec fullstack_frontend ping backend
+```
+
+---
+
+## 🧪 Tests et Validation
+
+### 1. Vérification des services
+```bash
+# Status des conteneurs
+docker-compose ps
+
+# Logs des services
 docker-compose logs frontend
-
-# Reconstruire une image
-docker-compose build backend
+docker-compose logs backend
+docker-compose logs database
 ```
 
-### Gestion des Volumes et Données
-
+### 2. Tests de l'API
 ```bash
-# Lister les volumes
-docker volume ls
+# Health check
+curl http://localhost:3001/health
 
-# Supprimer tous les volumes (ATTENTION: perte de données)
-docker-compose down -v
+# Lister les utilisateurs
+curl http://localhost:3001/api/users
 
-# Backup de la base de données
-docker-compose exec database pg_dump -U postgres fullstack_app > backup.sql
+# Créer un utilisateur
+curl -X POST http://localhost:3001/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test User","email":"test@example.com"}'
 ```
 
-### Debugging
-
+### 3. Test de persistance
 ```bash
-# Se connecter à un conteneur
-docker-compose exec backend sh
-docker-compose exec database psql -U postgres -d fullstack_app
+# 1. Ajouter des données via l'interface
+# 2. Arrêter les conteneurs
+docker-compose down
 
-# Inspecter les réseaux
+# 3. Redémarrer
+docker-compose up -d
+
+# 4. Vérifier que les données sont toujours présentes
+curl http://localhost:3001/api/users
+```
+
+### 4. Test de communication réseau
+```bash
+# Vérifier la communication interne
+docker exec fullstack_backend nc -zv database 5432
+docker exec fullstack_frontend nc -zv backend 3001
+```
+
+---
+
+## 📦 Images Docker Hub
+
+### Images publiées
+- **Frontend** : `therebzu/ecodeli-frontend:latest`
+- **Backend** : `therebzu/ecodeli-backend:latest`
+
+### Tags et commandes pour pousser
+```bash
+# Tag des images
+docker tag ecodeli-frontend:latest therebzu/ecodeli-frontend:latest
+docker tag ecodeli-backend:latest therebzu/ecodeli-backend:latest
+
+# Push vers Docker Hub
+docker push therebzu/ecodeli-frontend:latest
+docker push therebzu/ecodeli-backend:latest
+```
+
+### Utiliser les images depuis Docker Hub
+```bash
+# Modifier docker-compose.yml pour utiliser les images publiques
+# frontend:
+#   image: therebzu/ecodeli-frontend:latest
+# backend:
+#   image: therebzu/ecodeli-backend:latest
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Problèmes courants
+
+#### Port déjà utilisé
+```bash
+# Identifier le processus utilisant le port
+netstat -tulpn | grep :3000
+
+# Changer les ports dans docker-compose.yml si nécessaire
+```
+
+#### Échec de connexion à la base de données
+```bash
+# Vérifier les logs
+docker-compose logs database
+
+# Vérifier la connectivité
+docker exec fullstack_backend ping database
+```
+
+#### Problème de build
+```bash
+# Nettoyer les images et rebuild
+docker-compose down
+docker system prune -f
+docker-compose up --build
+```
+
+#### Volumes corrompus
+```bash
+# ⚠️ Supprime toutes les données
+docker-compose down --volumes
+docker volume prune -f
+docker-compose up --build
+```
+
+### Commandes utiles
+```bash
+# Voir l'utilisation des ressources
+docker stats
+
+# Inspecter un conteneur
+docker inspect fullstack_frontend
+
+# Shell dans un conteneur
+docker exec -it fullstack_backend sh
+
+# Voir les réseaux
 docker network ls
 docker network inspect dockers_fullstack_network
 ```
 
-## Structure du Projet
+---
 
-```
-dockers/
-├── frontend/
-│   ├── public/
-│   │   └── index.html
-│   ├── src/
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── Dockerfile
-│   ├── .dockerignore
-│   └── package.json
-├── backend/
-│   ├── server.js
-│   ├── .env
-│   ├── Dockerfile
-│   ├── .dockerignore
-│   └── package.json
-├── database/
-│   └── init.sql
-├── docker-compose.yml
-└── README.md
-```
+## 📝 Informations du projet
 
-## Configuration Environnement
+### Architecture technique
+- **Frontend** : React 18, JavaScript ES6+, CSS3 avec variables
+- **Backend** : Node.js 18, Express.js, dotenv, cors
+- **Database** : PostgreSQL 15, Volumes Docker
+- **Orchestration** : Docker Compose v3.8
 
-### Variables d'Environnement Backend
+### Conformité aux exigences
+- ✅ **Conteneurisation** : 3 services distincts
+- ✅ **Docker Compose** : Orchestration complète
+- ✅ **Persistance** : Volume PostgreSQL
+- ✅ **Réseau** : Communication sécurisée
+- ✅ **Images** : Publiées sur Docker Hub
+- ✅ **Documentation** : Guide complet
 
-- `PORT` : Port du serveur (défaut: 3001)
-- `DB_HOST` : Hôte de la base de données (défaut: database)
-- `DB_NAME` : Nom de la base de données (défaut: fullstack_app)
-- `DB_USER` : Utilisateur PostgreSQL (défaut: postgres)
-- `DB_PASSWORD` : Mot de passe PostgreSQL (défaut: password)
-- `DB_PORT` : Port PostgreSQL (défaut: 5432)
+### Auteur
+**Projet Conteneurisation** - Année 2024-2025  
+LENOIR Romain - romain.lenoir@outlook.com
 
-### Variables d'Environnement Frontend
+---
 
-- `REACT_APP_API_URL` : URL de l'API backend (défaut: http://localhost:3001)
+## 📄 Licence
 
-## Fonctionnalités Implémentées
+Ce projet est développé dans le cadre académique.
 
-✅ Conteneurisation de chaque composant (frontend, backend, database)  
-✅ Orchestration avec Docker Compose  
-✅ Volumes pour persistance des données PostgreSQL  
-✅ Réseau personnalisé pour communication sécurisée  
-✅ Health checks pour tous les services  
-✅ Gestion des dépendances entre services  
-✅ Configuration environnement pour chaque service  
-✅ Scripts d'initialisation de base de données  
+---
 
-## Troubleshooting
-
-### Problèmes Courants
-
-1. **Port déjà utilisé**
-   ```bash
-   # Changer les ports dans docker-compose.yml
-   ports:
-     - "3001:3001"  # Changer le premier port
-   ```
-
-2. **Échec de connexion à la base de données**
-   ```bash
-   # Vérifier que le service database est démarré
-   docker-compose ps
-   docker-compose logs database
-   ```
-
-3. **Problème de build**
-   ```bash
-   # Nettoyer les images et reconstruire
-   docker-compose down
-   docker system prune -f
-   docker-compose up --build
-   ```
-
-## Contribution
-
-Ce projet a été développé dans le cadre du TP "Conteneurisation d'une Application Full Stack avec Docker".
-
-## License
-
-Ce projet est à des fins éducatives uniquement.
+**🚀 L'application EcoDeli démontre une maîtrise complète de la conteneurisation Docker pour une architecture fullstack moderne !**
